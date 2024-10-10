@@ -20,6 +20,8 @@ def canUnlockAll(boxes):
     Returns:
         boolean: True if all boxes can be opened, else return False
     """
+    if not boxes:
+        return True
     the_set = set()
     verifier = set()
     for idx in range(len(boxes)):
