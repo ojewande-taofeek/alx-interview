@@ -22,16 +22,22 @@ def canUnlockAll(boxes):
     """
     if not boxes:
         return True
-    box_len = len(boxes)
-    unlocked_boxes = set([0])
-    keys = set(boxes[0])
-    while keys:
-        key = keys.pop()
-        print(keys)
-        if key < box_len and key not in unlocked_boxes:
-            unlocked_boxes.add(key)
-            keys.update(boxes[key])
-            print(keys)
-        if len(unlocked_boxes) == box_len:
-            return True
-    return len(unlocked_boxes) == box_len
+    the_set = set()
+    verifier = set()
+    for idx in range(len(boxes)):
+        verifier.add(idx)
+        for key in boxes[idx]:
+            if idx == 0 or idx in the_set:
+                the_set.add(key)
+            elif the_set - verifier:
+                remainder = (the_set - verifier)
+                for val in remainder:
+                    try:
+                        if (boxes[val]):
+                            for element in boxes[val]:
+                                the_set.add(element)
+                    except IndexError:
+                        continue
+            else:
+                return False
+    return True
