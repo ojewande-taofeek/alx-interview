@@ -12,9 +12,7 @@ def pascal_triangle(n):
         n (int): The height or row of the Pascal's triangle
     """
     triangle = []
-    if n <= 0:
-        triangle.append([[]])
-    elif n == 1:
+    if n == 1:
         triangle.append([1])
     elif n == 2:
         triangle.append([1, 1])
