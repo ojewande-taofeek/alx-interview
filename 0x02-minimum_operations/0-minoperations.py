@@ -25,8 +25,7 @@ def minOperations(n):
     if n < 2:
         return 0
     elif n <= 5:
-        print(n)
-        return
+        return n
     div_list = []
     div = 2
     half = n // div
