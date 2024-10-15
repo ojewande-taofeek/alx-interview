@@ -35,4 +35,6 @@ def minOperations(n):
             div_list.append(div)
         else:
             div += 1
+    if not div_list:
+        return n
     return sum(div_list)
