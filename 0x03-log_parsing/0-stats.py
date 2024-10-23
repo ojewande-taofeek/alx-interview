@@ -19,7 +19,7 @@ def printer():
     """
     print("File size: {:d}".format(total))
     for key, value in sorted(storage.items()):
-        print("{}: {}".format(key, value))
+        print("{}: {:d}".format(key, value))
 
 
 def handler(signum, frame):
@@ -46,23 +46,20 @@ pattern = (
 for line in sys.stdin:
     match = re.match(pattern, line)
     if match:
-        # print(line)
-        status_match = match.group(3)
-        file_size_match = match.group(4)
-        if status_match and file_size_match:
-            status = int(status_match)
-            file_size = int(file_size_match)
-            if status in status_code and isinstance(file_size, int):
-                total += file_size
-                counter += 1
-                if status in storage:
-                    val = storage.get(status)
-                    storage[status] = val + 1
-                else:
-                    storage[status] = 1
-                if counter % 10 == 0 and counter != 0:
-                    printer()
+        status = int(match.group(3))
+        file_size = int(match.group(4))
+        if status in status_code and isinstance(status, int) and \
+           isinstance(file_size, int):
+            total += file_size
+            counter += 1
+            if status in storage:
+                val = storage.get(status)
+                storage[status] = val + 1
             else:
-                continue
+                storage[status] = 1
+            if counter % 10 == 0 and counter != 0:
+                printer()
         else:
             continue
+    else:
+        continue
