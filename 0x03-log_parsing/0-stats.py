@@ -17,7 +17,7 @@ def printer():
     """
         Prints the output
     """
-    print("File size: {}".format(total))
+    print("File size: {:d}".format(total))
     for key, value in sorted(storage.items()):
         print("{}: {}".format(key, value))
 
@@ -34,24 +34,35 @@ def handler(signum, frame):
 
 
 signal.signal(signal.SIGINT, handler)
+pattern = (
+    r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - "
+    r"\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6})\] "
+    r'"GET /projects/\d+ HTTP/1\.1" '
+    r"(\d{3}) "
+    r"(\d+)$"
+)
+
 
 for line in sys.stdin:
-    status_match = re.search(r'\s\d{3}\s', line)
-    file_size_match = re.search(r'\s\d{1,4}$', line)
-    if status_match and file_size_match:
-        status = int(status_match.group().strip())
-        file_size = int(file_size_match.group().strip())
-        if status in status_code and isinstance(file_size, int):
-            total += file_size
-            counter += 1
-            if status in storage:
-                val = storage.get(status)
-                storage[status] = val + 1
+    match = re.match(pattern, line)
+    if match:
+        # print(line)
+        status_match = match.group(3)
+        file_size_match = match.group(4)
+        if status_match and file_size_match:
+            status = int(status_match)
+            file_size = int(file_size_match)
+            if status in status_code and isinstance(file_size, int):
+                total += file_size
+                counter += 1
+                if status in storage:
+                    val = storage.get(status)
+                    storage[status] = val + 1
+                else:
+                    storage[status] = 1
+                if counter % 10 == 0 and counter != 0:
+                    printer()
             else:
-                storage[status] = 1
-            if counter % 10 == 0:
-                printer()
+                continue
         else:
             continue
-    else:
-        continue
