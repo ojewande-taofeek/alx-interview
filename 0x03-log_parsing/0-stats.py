@@ -18,8 +18,8 @@ def printer():
         Prints the output
     """
     print("File size: {:d}".format(total))
-    for key, value in sorted(storage.items()):
-        print("{}: {:d}".format(key, value))
+    for key in sorted(storage.keys()):
+        print("{}: {:d}".format(key, storage[key]))
 
 
 def handler(signum, frame):
@@ -34,7 +34,7 @@ def handler(signum, frame):
 
 
 signal.signal(signal.SIGINT, handler)
-pattern = (
+pattern = re.compile(
     r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - "
     r"\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6})\] "
     r'"GET /projects/\d+ HTTP/1\.1" '
@@ -43,23 +43,17 @@ pattern = (
 )
 
 
-for line in sys.stdin:
-    match = re.match(pattern, line)
-    if match:
-        status = int(match.group(3))
-        file_size = int(match.group(4))
-        if status in status_code and isinstance(status, int) and \
-           isinstance(file_size, int):
+try:
+    for line in sys.stdin:
+        match = pattern.match(line)
+        if match:
+            status = int(match.group(3))
+            file_size = int(match.group(4))
             total += file_size
             counter += 1
-            if status in storage:
-                val = storage.get(status)
-                storage[status] = val + 1
-            else:
-                storage[status] = 1
-            if counter % 10 == 0 and counter != 0:
+            if status in status_code:
+                storage[status] = storage.get(status, 0) + 1
+            if counter % 10 == 0:
                 printer()
-        else:
-            continue
-    else:
-        continue
+except KeyboardInterrupt:
+    handler(None, None)
