@@ -4,7 +4,6 @@
 """
 import re
 import sys
-import signal
 
 
 total = 0
@@ -22,18 +21,17 @@ def printer():
         print("{}: {:d}".format(key, storage[key]))
 
 
-def handler(signum, frame):
+# def handler(signum, frame):
     """
         The signal handler
     Args:
         signum (int): The signal number
         frame (Object): The stack frame object
     """
-    printer()
-    sys.exit(0)
+# printer()
 
 
-signal.signal(signal.SIGINT, handler)
+# signal.signal(signal.SIGINT, handler)
 pattern = re.compile(
     r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - "
     r"\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6})\] "
@@ -47,13 +45,14 @@ try:
     for line in sys.stdin:
         match = pattern.match(line)
         if match:
-            status = int(match.group(3))
+            status = match.group(3)
             file_size = int(match.group(4))
             total += file_size
             counter += 1
-            if status in status_code:
+            if int(status) in status_code:
                 storage[status] = storage.get(status, 0) + 1
             if counter % 10 == 0:
                 printer()
 except KeyboardInterrupt:
-    handler(None, None)
+    printer()
+    raise
