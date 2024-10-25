@@ -56,9 +56,13 @@ try:
         else:
             try:
                 line_split = line.split()
-                file_size = int(line_split[-1])
-                if file_size:
-                    total += file_size
+                if len(line_split) > 1:
+                    file_size = int(line_split[-1])
+                    if file_size:
+                        total += file_size
+                    status = line_split[-2]
+                    if int(status) in status_code:
+                        storage[status] = storage.get(status, 0) + 1
             except (IndexError, TypeError, ValueError):
                 pass
     if counter % 10 != 0 or counter == 0:
