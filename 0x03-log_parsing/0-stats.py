@@ -53,6 +53,8 @@ try:
                 storage[status] = storage.get(status, 0) + 1
             if counter % 10 == 0:
                 printer()
+    if counter < 10 and counter != 0:
+        printer()
 except KeyboardInterrupt:
     printer()
     raise
