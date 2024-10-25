@@ -55,10 +55,11 @@ try:
                 printer()
         else:
             try:
-                file_size = int(line[-1])
+                line_split = line.split()
+                file_size = int(line_split[-1])
                 if file_size:
                     total += file_size
-            except (IndexError, TypeError):
+            except (IndexError, TypeError, ValueError):
                 pass
     if counter % 10 != 0 or counter == 0:
         printer()
