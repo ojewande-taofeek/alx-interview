@@ -53,6 +53,10 @@ try:
                 storage[status] = storage.get(status, 0) + 1
             if counter % 10 == 0:
                 printer()
+        else:
+            file_size = int(line[-1])
+            if file_size:
+                total += file_size
     if counter % 10 != 0 or counter == 0:
         printer()
 except KeyboardInterrupt:
