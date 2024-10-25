@@ -54,9 +54,12 @@ try:
             if counter % 10 == 0:
                 printer()
         else:
-            file_size = int(line[-1])
-            if file_size:
-                total += file_size
+            try:
+                file_size = int(line[-1])
+                if file_size:
+                    total += file_size
+            except (IndexError, TypeError):
+                pass
     if counter % 10 != 0 or counter == 0:
         printer()
 except KeyboardInterrupt:
