@@ -15,6 +15,7 @@ def validUTF8(data):
     num_bytes = 0
     if isinstance(data, list):
         for val in data:
+            val &= 0xFF  # masked using decimal 255
             if num_bytes == 0:  # 1-byte Character
                 if (val >> 7) == 0:
                     num_bytes = 0
