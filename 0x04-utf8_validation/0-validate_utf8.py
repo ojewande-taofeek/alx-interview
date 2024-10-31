@@ -12,7 +12,6 @@ def validUTF8(data):
     Args:
         data (list): List of integers
     """
-    
     try:
         if isinstance(data, list):
             for val in data:
