@@ -12,12 +12,11 @@ def validUTF8(data):
     Args:
         data (list): List of integers
     """
-    num_bytes = [1, 2, 3, 4]
+    
     try:
         if isinstance(data, list):
             for val in data:
-                for num in num_bytes:
-                    val.to_bytes(num, byteorder='big')
+                val.to_bytes(1, byteorder='big')
     except OverflowError:
         return False
     return True
