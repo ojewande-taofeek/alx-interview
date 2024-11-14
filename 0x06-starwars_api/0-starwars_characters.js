@@ -2,31 +2,31 @@
 
 const argv = process.argv;
 const request = require('request');
+const { promisify } = require('util');
+const requestPromise = promisify(request);
 
-try {
-  request(`https://swapi-api.alx-tools.com/api/films/${argv[2]}/`, (error, response, body) => {
-    if (error) {
-      console.log(`Error: ${error.message}`);
-    } else if (response.statusCode === 200) {
-      const film = JSON.parse(body);
-      const charcaterUrl = film.characters;
-      for (let i = 0; i < charcaterUrl.length; i++) {
-        request(charcaterUrl[i], (error, response, body) => {
-          if (error) {
-            console.log(`Error: ${error.message}`);
-          } else if (response.statusCode === 200) {
-            const characterProfile = JSON.parse(body);
-            console.log(characterProfile.name);
-          } else {
-            console.log(response.statusCode);
-          }
-        });
+async function starsWarsCharcaters () {
+  try {
+    const response = await requestPromise(`https://swapi-api.alx-tools.com/api/films/${argv[2]}/`);
+    if (response.statusCode === 200) {
+      const episode = JSON.parse(response.body);
+      const characterUrls = episode.characters;
+
+      for (const characterUrl of characterUrls) {
+        const characterProfileResponse = await requestPromise(characterUrl);
+        if (characterProfileResponse.statusCode === 200) {
+          const characterProfile = JSON.parse(characterProfileResponse.body);
+          console.log(characterProfile.name);
+        } else {
+          console.log(`Character Error: ${characterProfileResponse.statusCode}`);
+        }
       }
     } else {
-      console.log(response.statusCode);
+      console.log(`Error: ${response.statusCode}`);
     }
+  } catch (error) {
+    console.log(`Error ${error.message}`);
   }
-  );
-} catch (err) {
-  console.log(err);
 }
+
+starsWarsCharcaters();
